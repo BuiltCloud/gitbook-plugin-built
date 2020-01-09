@@ -1,0 +1,42 @@
+{
+  "description": "GitBook Plugin built.",
+  "name": "gitbook-plugin-built",
+  "version": "0.0.1",
+  "keywords": [
+    "gitbook",
+    "plugin",
+    "built"
+  ],
+  "main": "index.js",
+  "author": {
+    "name": "enter",
+    "email": "350840291@qq.com"
+  },
+  "readme": "GitBook Plugin built.",
+  "engines": {
+    "gitbook": ">3.x.x"
+  },
+  "gitbook": {
+    "properties": {
+      "url": {
+        "type": "string",
+        "default": "http://www.example.com/my-logo.png",
+        "title": "Logo URL"
+      },
+      "style": {
+        "type": "string",
+        "default": "background: none;",
+        "title": "Custom CSS"
+      },
+      "href": {
+        "type": "string",
+        "default": "http://www.example.com",
+        "title": "Logo Link"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BuiltCloud/gitbook-plugin-built.git"
+  }
+}

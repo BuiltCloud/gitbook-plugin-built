@@ -1,5 +1,10 @@
 GitBook plugin: built
 ===========================
+
+npm i sync-request
+npm i node-cache
+npm i qrcode
+
 ```json
 {
     "plugins": ["built"],

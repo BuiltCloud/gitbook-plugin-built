@@ -4,6 +4,28 @@ var path = require('path');
 const syncReq = require('sync-request');
 const nodeCache = require('node-cache');
 const localCache = new nodeCache({});
+const QRCode = require('qrcode');
+
+Date.prototype.format = function(format) {
+	var date = {
+		"M+": this.getMonth() + 1,
+		"d+": this.getDate(),
+		"h+": this.getHours(),
+		"m+": this.getMinutes(),
+		"s+": this.getSeconds(),
+		"q+": Math.floor((this.getMonth() + 3) / 3),
+		"S+": this.getMilliseconds()
+	};
+	if (/(y+)/i.test(format)) {
+		format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+	}
+	for (var k in date) {
+		if (new RegExp("(" + k + ")").test(format)) {
+			format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+		}
+	}
+	return format;
+};
 
 module.exports = {
     book: {
@@ -49,17 +71,17 @@ module.exports = {
 			}
 			const defaultOption = {
 				'description': 'modified at',
-				'signature': 'Aleen',
+				'signature': 'Enter',
 				'wisdom': 'More than a coder, more than a designer',
 				'format': 'yyyy-MM-dd hh:mm:ss',
-				'copyright': 'Copyright &#169; aleen42',
+				'copyright': 'Copyright &#169; BuiltCloud all right reserved, powered by <a href="https://github.com/BuiltCloud" target="_blank">kingreatwill</a>',
 				'timeColor': '#666',
 				'copyrightColor': '#666',
 				'utcOffset': '8',
 				'isShowQRCode': true,
-				'baseUri': 'https://aleen42.gitbooks.io/personalwiki/content/',
+				'baseUri': '',
 				'isShowIssues': true,
-				'repo': 'aleen42/PersonalWiki',
+				'repo': 'BuiltCloud/Ocelot.GrpcHttpGateway',
 				'issueNum': '8',
 				'token': '',
 				'style': 'normal',
@@ -72,10 +94,6 @@ module.exports = {
 				for (var item in defaultOption) {					
 					if (item in configOption) {
 						defaultOption[item] = configOption[item];
-					}
-
-					if (item === 'copyright') {
-						defaultOption[item] += ' all right reserved, powered by <a href="https://github.com/aleen42" target="_blank">aleen42</a>';
 					}
 				}
 			}

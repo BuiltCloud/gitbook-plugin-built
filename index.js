@@ -8,6 +8,7 @@ module.exports = {
         assets: './lib',
         js: [
             'plugin.js',
+            'qrcode.js',
             'footer.js'
         ],
         css: [

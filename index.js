@@ -153,9 +153,8 @@ module.exports = {
 
 		currentUri: function (d, baseUri) {
 			if (this.output.name == 'website') {              
-				return QRCode.toDataURL(baseUri + this.output.toURL(d));//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
+				return await QRCode.toDataURL(baseUri + this.output.toURL(d));//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
 			} else {
-                console.log("qr_img_url")
 				return '';
 			}
 		},

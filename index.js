@@ -1,5 +1,7 @@
 var fs = require('fs');
 var path = require('path');
+import syncReq from 'sync-request';
+import nodeCache from 'node-cache';
 
 module.exports = {
     book: {

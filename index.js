@@ -158,6 +158,8 @@ module.exports = {
                     qr_img_url = url
                 })
                 console.log(qr_img_url)
+                console.log("qr_img_urlxxxx")
+                console.log(baseUri + this.output.toURL(d))
 				return qr_img_url;//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
 			} else {
                 console.log("qr_img_url")

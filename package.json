@@ -14,7 +14,7 @@
   },
   "readme": "GitBook Plugin built.",
   "engines": {
-    "gitbook": ">3.x.x"
+    "gitbook": ">1.x.x"
   },
   "gitbook": {
     "properties": {

@@ -152,17 +152,8 @@ module.exports = {
 		},
 
 		currentUri: function (d, baseUri) {
-			if (this.output.name == 'website') {
-                var qr_img_url = ''
-                QRCode.toDataURL(baseUri + this.output.toURL(d), function (err, url) {
-                    console.log(url)
-                    console.log(err)
-                    qr_img_url = url
-                })
-                console.log(qr_img_url)
-                console.log("qr_img_urlxxxx")
-                console.log(baseUri + this.output.toURL(d))
-				return qr_img_url;//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
+			if (this.output.name == 'website') {              
+				return QRCode.toDataURL(baseUri + this.output.toURL(d));//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
 			} else {
                 console.log("qr_img_url")
 				return '';

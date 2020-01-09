@@ -5,10 +5,12 @@ module.exports = {
     book: {
         assets: './lib',
         js: [
-            'plugin.js'
+            'plugin.js',
+            'footer.js'
         ],
         css: [
-            'plugin.css'
+            'plugin.css',
+            'footer.css'
         ]
     },
     // Hook process during build

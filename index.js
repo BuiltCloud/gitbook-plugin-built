@@ -157,8 +157,10 @@ module.exports = {
                 QRCode.toDataURL(baseUri + this.output.toURL(d), function (err, url) {
                     qr_img_url = url
                 })
+                console.log(qr_img_url)
 				return qr_img_url;//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
 			} else {
+                console.log("qr_img_url")
 				return '';
 			}
 		},

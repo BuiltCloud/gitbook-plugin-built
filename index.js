@@ -155,6 +155,8 @@ module.exports = {
 			if (this.output.name == 'website') {
                 var qr_img_url = ''
                 QRCode.toDataURL(baseUri + this.output.toURL(d), function (err, url) {
+                    console.log(url)
+                    console.log(err)
                     qr_img_url = url
                 })
                 console.log(qr_img_url)

@@ -19,6 +19,10 @@
     "email": "350840291@qq.com"
   },
   "readme": "GitBook Plugin built.",
+  "dependencies": {
+    "sync-request": "3.0.1",
+    "node-cache": "3.2.1"
+  },
   "engines": {
     "gitbook": "*"
   },

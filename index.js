@@ -1,15 +1,15 @@
 var fs = require('fs');
 var path = require('path');
+
 const syncReq = require('sync-request');
 const nodeCache = require('node-cache');
+const localCache = new nodeCache({});
 
 module.exports = {
     book: {
         assets: './lib',
         js: [
-            'plugin.js',
-            'qrcode.js',
-            'footer.js'
+            'plugin.js'
         ],
         css: [
             'plugin.css',
@@ -41,7 +41,164 @@ module.exports = {
 				fs.unlinkSync(gitbookFaviconPath);
 				fs.createReadStream(favicon).pipe(fs.createWriteStream(gitbookFaviconPath));
 			}
-        }
-    }
+        },
 
+        'page:before': function (page) {
+			if (this.output.name != 'website') {
+				return page;
+			}
+			const defaultOption = {
+				'description': 'modified at',
+				'signature': 'Aleen',
+				'wisdom': 'More than a coder, more than a designer',
+				'format': 'yyyy-MM-dd hh:mm:ss',
+				'copyright': 'Copyright &#169; aleen42',
+				'timeColor': '#666',
+				'copyrightColor': '#666',
+				'utcOffset': '8',
+				'isShowQRCode': true,
+				'baseUri': 'https://aleen42.gitbooks.io/personalwiki/content/',
+				'isShowIssues': true,
+				'repo': 'aleen42/PersonalWiki',
+				'issueNum': '8',
+				'token': '',
+				'style': 'normal',
+				'super': '&#174;'
+			};
+
+			const configOption = this.config.get('pluginsConfig')['page-footer'];
+			
+			if (configOption) {
+				for (var item in defaultOption) {					
+					if (item in configOption) {
+						defaultOption[item] = configOption[item];
+					}
+
+					if (item === 'copyright') {
+						defaultOption[item] += ' all right reserved, powered by <a href="https://github.com/aleen42" target="_blank">aleen42</a>';
+					}
+				}
+			}
+			
+			const qrImg = defaultOption.isShowQRCode === true ? '\n{{ file.path | currentUri("' + defaultOption.baseUri + '") }}\n' : '';
+			const uri = defaultOption.isShowQRCode === true ? '\n{{ file.path | convertUri("' + defaultOption.baseUri + '") }}\n' : '';
+			const issues = defaultOption.isShowIssues === true ? '\n{{ "' + defaultOption.repo + '" | listRepo("' + (process.env['GITHUB_TOKEN'] || defaultOption.token) + '", "' + defaultOption.format + '", ' + defaultOption.utcOffset + ', ' + defaultOption.issueNum + ') }}\n' : '';
+
+			defaultOption.style = (defaultOption.style == 'normal' || defaultOption.style == 'symmetrical') ? defaultOption.style : 'normal';
+
+			const htmlContents = ' \n\n<div class="footer">' +
+				'<div class="footer__container--' + defaultOption.style + '" alt="' + uri + '">' +
+					qrImg +
+					'<div class="footer__description--' + defaultOption.style + '">' +
+						'<p class="paragraph footer__author--' + defaultOption.style + '">' + defaultOption.signature + '<sup class="super">' + defaultOption.super + '</sup></p>' +
+						'<p class="paragraph footer__quote--' + defaultOption.style + '">' + defaultOption.wisdom + '</p>' +
+						'<div class="footer__main--' + defaultOption.style + '">' +
+							'<p class="paragraph footer__main__paragraph--' + defaultOption.style + ' copyright" style="color: ' + defaultOption.copyrightColor + ' !important;">' + defaultOption.copyright +  '</span>' +
+							'<p class="paragraph footer__main__paragraph--' + defaultOption.style + ' footer__modifyTime--' + defaultOption.style + '" style="color: ' + defaultOption.timeColor + ' !important;">' +
+								'<span style="color: #666 !important;">' + defaultOption.description + '</span>' +
+								'\n{{ file.mtime | dateFormat("' + defaultOption.format + '", ' + defaultOption.utcOffset + ') }}\n' +
+							'</p>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+				'<div class="box__issues">' +
+					issues +
+				'</div>' +
+			'</div>';
+
+			/** add contents to the original content */
+			page.content = page.content + htmlContents;
+
+			return page;
+		}
+    },
+    blocks: {},
+    /** Map of new filters */
+	filters: {
+		dateFormat: function(d, format, utc) {
+			var reservedDate = new Date(d);
+			reservedDate = new Date(
+				reservedDate.getUTCFullYear(),
+				reservedDate.getUTCMonth(),
+				reservedDate.getUTCDate(),
+				reservedDate.getUTCHours(),
+				reservedDate.getUTCMinutes(),
+				reservedDate.getUTCSeconds()
+			);
+			reservedDate.setTime(reservedDate.getTime() + (!utc ? 8 : parseInt(utc)) * 60 * 60 * 1000);
+			return reservedDate.format(format);
+		},
+
+		convertUri: function (d, baseUri) {
+			return baseUri + this.output.toURL(d);
+		},
+
+		currentUri: function (d, baseUri) {
+			if (this.output.name == 'website') {
+				return 'xxxxxxxxxx';//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
+			} else {
+				return '';
+			}
+		},
+
+		listRepo: function (d, token, format, utc, issueNum) {
+			var content = '';
+			if (localCache.get('cleared') != 'true') {
+				localCache.del('issues');
+				localCache.set('cleared', 'true');
+				console.log('clear successfully');
+			}
+
+			var value = localCache.get('issues');
+
+			if (typeof(value) == 'undefined') {
+				var url = (token == '') ? 'https://api.github.com/repos/' + d + '/issues?per_page=' + issueNum : 'https://api.github.com/repos/' + d + '/issues?per_page=' + issueNum + '&access_token=' + token;
+
+				var res = syncReq('GET', url, {
+					'headers': {
+						'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36'
+					}
+				});
+
+				if (res.statusCode != '200') {
+					console.log('failed to get issues with token: ' + token);
+				} else {
+					localCache.set('issues', res.getBody().toString());
+				}
+
+				value = localCache.get('issues');
+			}
+
+			/** parse json */
+			value = JSON.parse(value);
+
+			content += '<span class="issue-line"><p class="issue-header"><strong>' + value.length + '</strong> issues reported</p></span>';
+
+			for (var i = 0; i < value.length; i++) {
+				var labels = '';
+
+				for (var j = 0; j < value[i].labels.length; j++) {
+					var bgColor = value[i].labels[j].color;
+					var r = parseInt(bgColor.slice(0, 2), 16);
+					var g = parseInt(bgColor.slice(2, 4), 16);
+					var b = parseInt(bgColor.slice(4, 6), 16);
+
+					var fontColor = r < 80 || g < 80 || b < 80 ? 'ffffff' : '000000';
+
+					labels += '<span class="issue-label" style="background-color: #' + bgColor + '; color: #' + fontColor + ';">' + value[i].labels[j].name + '</span>';
+				}
+
+				var reservedDate = new Date(value[i].updated_at);
+				reservedDate.setTime(reservedDate.getTime() + (parseInt(utc) === NaN ? 20 : parseInt(utc)) * 60 * 60 * 1000);
+
+				content += '<p class="issues">#' + value[i].number + ' <a href="' + value[i].html_url + '" target="_blank">' + value[i].title + '</a><span style="margin-left: 10px; color: #ddd;">' + reservedDate.format(format) + '</span>' + labels + '</p>\n';
+
+				if (i != value.length - 1) {
+					content += '<p class="issue-edge"></p>'
+				}
+			}
+
+			return content;
+		}
+	}
 };

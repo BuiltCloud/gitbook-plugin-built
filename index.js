@@ -153,18 +153,17 @@ module.exports = {
 
 		currentUri: function (d, baseUri) {
 			if (this.output.name == 'website') { 
-				return this.createQRcode2(baseUri + this.output.toURL(d), 15, 'Q') // pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
+				var createQRcode = function (text, typeNumber, errorCorrectLevel) {
+					const qr = qrcode(typeNumber || 10, errorCorrectLevel || 'H');
+					qr.addData(text);
+					qr.make();			
+					return qr.createSvgTag();
+				}
+				return createQRcode(baseUri + this.output.toURL(d), 15, 'Q') // pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
 			} else {
 				return '';
 			}
-		},
-		createQRcode2: function (text, typeNumber, errorCorrectLevel) {
-			const qr = qrcode(typeNumber || 10, errorCorrectLevel || 'H');
-			qr.addData(text);
-			qr.make();
-	
-			return qr.createSvgTag();
-		},
+		},		
 		listRepo: function (d, token, format, utc, issueNum) {
 			var content = '';
 			if (localCache.get('cleared') != 'true') {
@@ -224,12 +223,5 @@ module.exports = {
 
 			return content;
 		}
-	},
-	createQRcode: function (text, typeNumber, errorCorrectLevel) {
-		const qr = qrcode(typeNumber || 10, errorCorrectLevel || 'H');
-		qr.addData(text);
-		qr.make();
-
-		return qr.createSvgTag();
 	}
 };

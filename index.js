@@ -115,6 +115,7 @@ module.exports = {
 							'<p class="paragraph footer__main__paragraph--' + defaultOption.style + ' footer__modifyTime--' + defaultOption.style + '" style="color: ' + defaultOption.timeColor + ' !important;">' +
 								'<span style="color: #666 !important;">' + defaultOption.description + '</span>' +
 								'\n{{ file.mtime | dateFormat("' + defaultOption.format + '", ' + defaultOption.utcOffset + ') }}\n' +
+								'\n{{ file.ctime | dateFormat("' + defaultOption.format + '", ' + defaultOption.utcOffset + ') }}\n' +
 							'</p>' +
 						'</div>' +
 					'</div>' +

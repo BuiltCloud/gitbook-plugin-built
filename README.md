@@ -3,7 +3,7 @@ GitBook plugin: built
 
 npm i sync-request
 npm i node-cache
-npm i qrcode
+npm i qrcode-generator
 
 ```json
 {

@@ -98,7 +98,7 @@ module.exports = {
 				}
 			}
 			
-			const qrImg = defaultOption.isShowQRCode === true ? '\n{{ file.path |await currentUri("' + defaultOption.baseUri + '") }}\n' : '';
+			const qrImg = defaultOption.isShowQRCode === true ? '\n{{ file.path | currentUri("' + defaultOption.baseUri + '") }}\n' : '';
 			const uri = defaultOption.isShowQRCode === true ? '\n{{ file.path | convertUri("' + defaultOption.baseUri + '") }}\n' : '';
 			const issues = defaultOption.isShowIssues === true ? '\n{{ "' + defaultOption.repo + '" | listRepo("' + (process.env['GITHUB_TOKEN'] || defaultOption.token) + '", "' + defaultOption.format + '", ' + defaultOption.utcOffset + ', ' + defaultOption.issueNum + ') }}\n' : '';
 
@@ -153,12 +153,12 @@ module.exports = {
 
 		currentUri: async function (d, baseUri) {
 			if (this.output.name == 'website') { 
-				async function generateQR(url) {
-					let result = await QRCode.toDataURL(url)
-					console.log(result)
-					return result
-				}
-				return await generateQR(baseUri + this.output.toURL(d));//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
+				// async function generateQR(url) {
+				// 	let result = await QRCode.toDataURL(url)
+				// 	console.log(result)
+				// 	return result
+				// }
+				return await QRCode.toDataURL(baseUri + this.output.toURL(d)) // generateQR(baseUri + this.output.toURL(d));//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
 			} else {
 				return '';
 			}

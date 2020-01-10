@@ -106,7 +106,7 @@ module.exports = {
 
 			const htmlContents = ' \n\n<div class="footer">' +
 				'<div class="footer__container--' + defaultOption.style + '" alt="' + uri + '">' +
-					qrImg +
+				JSON.stringify(qrImg) +
 					'<div class="footer__description--' + defaultOption.style + '">' +
 						'<p class="paragraph footer__author--' + defaultOption.style + '">' + defaultOption.signature + '<sup class="super">' + defaultOption.super + '</sup></p>' +
 						'<p class="paragraph footer__quote--' + defaultOption.style + '">' + defaultOption.wisdom + '</p>' +

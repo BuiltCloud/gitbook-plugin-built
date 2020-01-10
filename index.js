@@ -50,8 +50,6 @@ module.exports = {
         },
         // This is called before the book is generated
         "init": function() {
-			let result = this.filters.convertUri('http://localhost:4000/')
-			console.log(result)
             console.log("init!");
         },
 
@@ -103,7 +101,7 @@ module.exports = {
 			const qrImg = defaultOption.isShowQRCode === true ? '\n{{ file.path | currentUri("' + defaultOption.baseUri + '") }}\n' : '';
 			const uri = defaultOption.isShowQRCode === true ? '\n{{ file.path | convertUri("' + defaultOption.baseUri + '") }}\n' : '';
 			const issues = defaultOption.isShowIssues === true ? '\n{{ "' + defaultOption.repo + '" | listRepo("' + (process.env['GITHUB_TOKEN'] || defaultOption.token) + '", "' + defaultOption.format + '", ' + defaultOption.utcOffset + ', ' + defaultOption.issueNum + ') }}\n' : '';
-			console.log(qrImg, uri)
+			console.log(this.filters.currentUri("xxxxxx"))
 			defaultOption.style = (defaultOption.style == 'normal' || defaultOption.style == 'symmetrical') ? defaultOption.style : 'normal';
 
 			const htmlContents = ' \n\n<div class="footer">' +

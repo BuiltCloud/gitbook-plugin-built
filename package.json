@@ -18,7 +18,7 @@
     "name": "enter",
     "email": "350840291@qq.com"
   },
-  "readme": "GitBook Plugin built.", 
+  "readme": "GitBook Plugin built.",
   "engines": {
     "gitbook": "*"
   },

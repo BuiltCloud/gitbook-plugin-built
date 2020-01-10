@@ -4,7 +4,7 @@ var path = require('path');
 const syncReq = require('sync-request');
 const nodeCache = require('node-cache');
 const localCache = new nodeCache({});
-const QRCode = require('qrcode');
+const qrcode = require('qrcode-generator');
 
 Date.prototype.format = function(format) {
 	var date = {
@@ -101,7 +101,7 @@ module.exports = {
 			const qrImg = defaultOption.isShowQRCode === true ? '\n{{ file.path | currentUri("' + defaultOption.baseUri + '") }}\n' : '';
 			const uri = defaultOption.isShowQRCode === true ? '\n{{ file.path | convertUri("' + defaultOption.baseUri + '") }}\n' : '';
 			const issues = defaultOption.isShowIssues === true ? '\n{{ "' + defaultOption.repo + '" | listRepo("' + (process.env['GITHUB_TOKEN'] || defaultOption.token) + '", "' + defaultOption.format + '", ' + defaultOption.utcOffset + ', ' + defaultOption.issueNum + ') }}\n' : '';
-			console.log(this.filters.currentUri("xxxxxx"))
+			
 			defaultOption.style = (defaultOption.style == 'normal' || defaultOption.style == 'symmetrical') ? defaultOption.style : 'normal';
 
 			const htmlContents = ' \n\n<div class="footer">' +
@@ -151,19 +151,20 @@ module.exports = {
 			return baseUri + this.output.toURL(d);
 		},
 
-		currentUri: async function (d, baseUri) {
+		currentUri: function (d, baseUri) {
 			if (this.output.name == 'website') { 
-				// async function generateQR(url) {
-				// 	let result = await QRCode.toDataURL(url)
-				// 	console.log(result)
-				// 	return result
-				// }
-				return await QRCode.toDataURL(baseUri + this.output.toURL(d)) // generateQR(baseUri + this.output.toURL(d));//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
+				return this.createQRcode2(baseUri + this.output.toURL(d), 15, 'Q') // pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
 			} else {
 				return '';
 			}
 		},
-
+		createQRcode2: function (text, typeNumber, errorCorrectLevel) {
+			const qr = qrcode(typeNumber || 10, errorCorrectLevel || 'H');
+			qr.addData(text);
+			qr.make();
+	
+			return qr.createSvgTag();
+		},
 		listRepo: function (d, token, format, utc, issueNum) {
 			var content = '';
 			if (localCache.get('cleared') != 'true') {
@@ -223,5 +224,12 @@ module.exports = {
 
 			return content;
 		}
+	},
+	createQRcode: function (text, typeNumber, errorCorrectLevel) {
+		const qr = qrcode(typeNumber || 10, errorCorrectLevel || 'H');
+		qr.addData(text);
+		qr.make();
+
+		return qr.createSvgTag();
 	}
 };

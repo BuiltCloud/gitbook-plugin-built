@@ -151,9 +151,8 @@ module.exports = {
 			return baseUri + this.output.toURL(d);
 		},
 
-		currentUri:async function (d, baseUri) {
+		currentUri: function (d, baseUri) {
 			if (this.output.name == 'website') { 
-				debugger
 				const generateQR = async url => {
 					try {
 					 return await QRCode.toDataURL(url)

@@ -65,7 +65,7 @@ module.exports = {
 			}
         },
 
-        'page:before': function (page) {
+        'page:before': async function (page) {
 			if (this.output.name != 'website') {
 				return page;
 			}

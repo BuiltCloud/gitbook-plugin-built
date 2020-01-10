@@ -50,7 +50,7 @@ module.exports = {
         },
         // This is called before the book is generated
         "init": function() {
-			let result = convertUri('http://localhost:4000/')
+			let result = this.filters.convertUri('http://localhost:4000/')
 			console.log(result)
             console.log("init!");
         },

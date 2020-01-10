@@ -151,8 +151,9 @@ module.exports = {
 			return baseUri + this.output.toURL(d);
 		},
 
-		currentUri: function (d, baseUri) {
+		currentUri:async function (d, baseUri) {
 			if (this.output.name == 'website') { 
+				debugger
 				const generateQR = async url => {
 					try {
 					 return await QRCode.toDataURL(url)
@@ -160,7 +161,7 @@ module.exports = {
 					  console.error(err)
 					}
 				}
-				return  generateQR(baseUri + this.output.toURL(d));//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
+				return await generateQR(baseUri + this.output.toURL(d));//pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
 			} else {
 				return '';
 			}

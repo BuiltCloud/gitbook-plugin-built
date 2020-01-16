@@ -45,3 +45,9 @@ The default size of `large` is `150 x 30`, and `small` is `100 x 20`, however, y
 - "size": "small" || "large"
 - "width": `number`
 - "height": `number`
+
+//https://github.com/liushilive/gitbook-plugin-books
+// https://github.com/rapidfixer/gitbook-plugin-mermaid-v8
+// https://github.com/vowstar/gitbook-plugin-flow
+
+https://unpkg.com/browse/mermaid@8.4.5/dist/mermaid.min.js

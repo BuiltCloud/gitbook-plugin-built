@@ -13,3 +13,13 @@
         window["gitbook-plugin-github-buttons"] = {{ config.pluginsConfig['github-buttons']|dump|safe }};
     </script>
 {% endblock %}
+
+{% block style %}
+{{ super() }}
+
+{% endblock %}
+
+{% block javascript %}
+{{ super() }}
+<script src="{{ "gitbook-plugin-mermaid-v8/mermaid/mermaid.min.js"|resolveAsset }}"></script>
+{% endblock %}

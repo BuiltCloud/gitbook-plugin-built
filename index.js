@@ -11,7 +11,7 @@ const nodeCache = require('node-cache');
 const localCache = new nodeCache({});
 const qrcode = require('qrcode-generator');
 
-Date.prototype.format = function(format) {
+Date.prototype.format = function (format) {
 	var date = {
 		"M+": this.getMonth() + 1,
 		"d+": this.getDate(),
@@ -33,53 +33,53 @@ Date.prototype.format = function(format) {
 };
 
 module.exports = {
-    book: {
-        assets: './lib',
-        js: [
+	book: {
+		assets: './lib',
+		js: [
 			'plugin.js',
 			'mermaid/mermaid.min.js',
 			'mermaid/mermaid.index.js'
-        ],
-        css: [
-            'plugin.css',
+		],
+		css: [
+			'plugin.css',
 			'footer.css',
 			"katex.min.css"
-        ]
+		]
 	},
 	ebook: {
-        assets: "./lib",
-        css: [
-            "katex.min.css"
-        ]
-    },
-    // Hook process during build
-    hooks: {
-        // For all the hooks, this represent the current generator
-        "page": function(page) {
-            // img-popup;
-            if(this.options.pluginsConfig && this.options.pluginsConfig["img-popup"]){
-                page.content = page.content + '\n<script>document.onclick = function(e){ e.target.tagName === "IMG" && e.target.id != "book-logo" && window.open(e.target.src,e.target.src)}</script><style>img{cursor:pointer}</style>';
-            }
-            return page;
-        },
-        // This is called before the book is generated
-        "init": function() {
-            console.log("init!");
-        },
+		assets: "./lib",
+		css: [
+			"katex.min.css"
+		]
+	},
+	// Hook process during build
+	hooks: {
+		// For all the hooks, this represent the current generator
+		"page": function (page) {
+			// img-popup;
+			if (this.options.pluginsConfig && this.options.pluginsConfig["img-popup"]) {
+				page.content = page.content + '\n<script>document.onclick = function(e){ e.target.tagName === "IMG" && e.target.id != "book-logo" && window.open(e.target.src,e.target.src)}</script><style>img{cursor:pointer}</style>';
+			}
+			return page;
+		},
+		// This is called before the book is generated
+		"init": function () {
+			console.log("init!");
+		},
 
-        // This is called after the book generation
-        "finish": function() {
-            // favicon.ico;
-            var pathFile = this.options.pluginsConfig && this.options.pluginsConfig.favicon;
+		// This is called after the book generation
+		"finish": function () {
+			// favicon.ico;
+			var pathFile = this.options.pluginsConfig && this.options.pluginsConfig.favicon;
 			var favicon = path.join(process.cwd(), pathFile);
 			var gitbookFaviconPath = path.join(process.cwd(), '_book', 'gitbook', 'images', 'favicon.ico');
-			if (pathFile && fs.existsSync(pathFile) && fs.existsSync(gitbookFaviconPath)){
+			if (pathFile && fs.existsSync(pathFile) && fs.existsSync(gitbookFaviconPath)) {
 				fs.unlinkSync(gitbookFaviconPath);
 				fs.createReadStream(favicon).pipe(fs.createWriteStream(gitbookFaviconPath));
 			}
-        },
+		},
 
-        'page:before': async function (page) {
+		'page:before': async function (page) {
 			if (this.output.name != 'website') {
 				return page;
 			}
@@ -104,40 +104,40 @@ module.exports = {
 			};
 
 			const configOption = this.config.get('pluginsConfig')['page-footer'];
-			
+
 			if (configOption) {
-				for (var item in defaultOption) {					
+				for (var item in defaultOption) {
 					if (item in configOption) {
 						defaultOption[item] = configOption[item];
 					}
 				}
 			}
-			
+
 			const qrImg = defaultOption.isShowQRCode === true ? '\n{{ file.path | currentUri("' + defaultOption.baseUri + '") }}\n' : '';
 			const uri = defaultOption.isShowQRCode === true ? '\n{{ file.path | convertUri("' + defaultOption.baseUri + '") }}\n' : '';
 			const issues = defaultOption.isShowIssues === true ? '\n{{ "' + defaultOption.repo + '" | listRepo("' + (process.env['GITHUB_TOKEN'] || defaultOption.token) + '", "' + defaultOption.format + '", ' + defaultOption.utcOffset + ', ' + defaultOption.issueNum + ') }}\n' : '';
-			
+
 			defaultOption.style = (defaultOption.style == 'normal' || defaultOption.style == 'symmetrical') ? defaultOption.style : 'normal';
 
 			const htmlContents = ' \n\n<div class="footer">' +
 				'<div class="footer__container--' + defaultOption.style + '" alt="' + uri + '">' +
-				  qrImg	 +
-					'<div class="footer__description--' + defaultOption.style + '">' +
-						'<p class="paragraph footer__author--' + defaultOption.style + '">' + defaultOption.signature + '<sup class="super">' + defaultOption.super + '</sup></p>' +
-						'<p class="paragraph footer__quote--' + defaultOption.style + '">' + defaultOption.wisdom + '</p>' +
-						'<div class="footer__main--' + defaultOption.style + '">' +
-							'<p class="paragraph footer__main__paragraph--' + defaultOption.style + ' copyright" style="color: ' + defaultOption.copyrightColor + ' !important;">' + defaultOption.copyright +  '</span>' +
-							'<p class="paragraph footer__main__paragraph--' + defaultOption.style + ' footer__modifyTime--' + defaultOption.style + '" style="color: ' + defaultOption.timeColor + ' !important;">' +
-								'<span style="color: #666 !important;">' + defaultOption.description + '</span>' +
-								'\n{{ file.mtime | dateFormat("' + defaultOption.format + '", ' + defaultOption.utcOffset + ') }}\n' +
-							'</p>' +
-						'</div>' +
-					'</div>' +
+				qrImg +
+				'<div class="footer__description--' + defaultOption.style + '">' +
+				'<p class="paragraph footer__author--' + defaultOption.style + '">' + defaultOption.signature + '<sup class="super">' + defaultOption.super + '</sup></p>' +
+				'<p class="paragraph footer__quote--' + defaultOption.style + '">' + defaultOption.wisdom + '</p>' +
+				'<div class="footer__main--' + defaultOption.style + '">' +
+				'<p class="paragraph footer__main__paragraph--' + defaultOption.style + ' copyright" style="color: ' + defaultOption.copyrightColor + ' !important;">' + defaultOption.copyright + '</span>' +
+				'<p class="paragraph footer__main__paragraph--' + defaultOption.style + ' footer__modifyTime--' + defaultOption.style + '" style="color: ' + defaultOption.timeColor + ' !important;">' +
+				'<span style="color: #666 !important;">' + defaultOption.description + '</span>' +
+				'\n{{ file.mtime | dateFormat("' + defaultOption.format + '", ' + defaultOption.utcOffset + ') }}\n' +
+				'</p>' +
+				'</div>' +
+				'</div>' +
 				'</div>' +
 				'<div class="box__issues">' +
-					issues +
+				issues +
 				'</div>' +
-			'</div>';
+				'</div>';
 
 			/** add contents to the original content */
 			page.content = page.content + htmlContents;
@@ -145,27 +145,49 @@ module.exports = {
 			return page;
 		}
 	},
-    blocks: {
-		math: {
-            shortcuts: {
-                parsers: ["markdown", "asciidoc", "restructuredtext"],
-                start: "$$",
-                end: "$$"
-            },
-            process: function(blk) {
-                var tex = blk.body;
-                var isInline = !(tex[0] == "\n");
-                var output = katex.renderToString(tex, {
-                    displayMode: !isInline
-                });
-
-                return output;
-            }
-        }
+	blocks: {
+		math: { // Double dollar signs ($) for math blocks (centered)
+			shortcuts: {
+				parsers: ['markdown', 'asciidoc', 'restructuredtext'],
+				start: '$$',
+				end: '$$'
+			},
+			process(block) {
+				let output = ''
+				try {
+					output = katex.renderToString(block.body, {
+						displayMode: true
+					})
+				} catch (e) {
+					console.error(e)
+					output = e
+				}
+				return output
+			}
+		},
+		math_inline: { // Single dollar sign for inline math
+			shortcuts: {
+				parsers: ['markdown', 'asciidoc', 'restructuredtext'],
+				start: '$',
+				end: '$'
+			},
+			process(block) {
+				let output = ''
+				try {
+					output = katex.renderToString(block.body, {
+						displayMode: false
+					})
+				} catch (e) {
+					console.error(e)
+					output = e
+				}
+				return output
+			}
+		}
 	},
-    /** Map of new filters */
+	/** Map of new filters */
 	filters: {
-		dateFormat: function(d, format, utc) {
+		dateFormat: function (d, format, utc) {
 			var reservedDate = new Date(d);
 			reservedDate = new Date(
 				reservedDate.getUTCFullYear(),
@@ -184,18 +206,18 @@ module.exports = {
 		},
 
 		currentUri: function (d, baseUri) {
-			if (this.output.name == 'website') { 
+			if (this.output.name == 'website') {
 				var createQRcode = function (text, typeNumber, errorCorrectLevel) {
 					const qr = qrcode(typeNumber || 10, errorCorrectLevel || 'H');
 					qr.addData(text);
-					qr.make();			
+					qr.make();
 					return qr.createSvgTag();
 				}
 				return createQRcode(baseUri + this.output.toURL(d), 15, 'Q') // pageFooter.createQRcode(baseUri + this.output.toURL(d), 15, 'Q');
 			} else {
 				return '';
 			}
-		},		
+		},
 		listRepo: function (d, token, format, utc, issueNum) {
 			var content = '';
 			if (localCache.get('cleared') != 'true') {
@@ -206,7 +228,7 @@ module.exports = {
 
 			var value = localCache.get('issues');
 
-			if (typeof(value) == 'undefined') {
+			if (typeof (value) == 'undefined') {
 				var url = (token == '') ? 'https://api.github.com/repos/' + d + '/issues?per_page=' + issueNum : 'https://api.github.com/repos/' + d + '/issues?per_page=' + issueNum + '&access_token=' + token;
 
 				var res = syncReq('GET', url, {

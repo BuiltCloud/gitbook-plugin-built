@@ -4,6 +4,7 @@ const path = require('path');
 const crypto = require('crypto');
 const url = require('url');
 const os = require('os');
+const katex = require("katex");
 
 const syncReq = require('sync-request');
 const nodeCache = require('node-cache');
@@ -41,7 +42,14 @@ module.exports = {
         ],
         css: [
             'plugin.css',
-            'footer.css'
+			'footer.css',
+			"katex.min.css"
+        ]
+	},
+	ebook: {
+        assets: "./lib",
+        css: [
+            "katex.min.css"
         ]
     },
     // Hook process during build
@@ -138,7 +146,22 @@ module.exports = {
 		}
 	},
     blocks: {
-		
+		math: {
+            shortcuts: {
+                parsers: ["markdown", "asciidoc", "restructuredtext"],
+                start: "$$",
+                end: "$$"
+            },
+            process: function(blk) {
+                var tex = blk.body;
+                var isInline = !(tex[0] == "\n");
+                var output = katex.renderToString(tex, {
+                    displayMode: !isInline
+                });
+
+                return output;
+            }
+        }
 	},
     /** Map of new filters */
 	filters: {

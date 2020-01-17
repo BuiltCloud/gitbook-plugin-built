@@ -149,8 +149,8 @@ module.exports = {
 		math: { // Double dollar signs ($) for math blocks (centered)
 			shortcuts: {
 				parsers: ['markdown', 'asciidoc', 'restructuredtext'],
-				start: '$$',
-				end: '$$'
+				start: '$$$',
+				end: '$$$'
 			},
 			process(block) {
 				let output = ''
@@ -168,8 +168,8 @@ module.exports = {
 		math_inline: { // Single dollar sign for inline math
 			shortcuts: {
 				parsers: ['markdown', 'asciidoc', 'restructuredtext'],
-				start: '$',
-				end: '$'
+				start: '$$',
+				end: '$$'
 			},
 			process(block) {
 				let output = ''

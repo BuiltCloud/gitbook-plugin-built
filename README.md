@@ -4,6 +4,7 @@ GitBook plugin: built
 npm i sync-request
 npm i node-cache
 npm i qrcode-generator
+npm i mermaid.cli
 
 ```json
 {

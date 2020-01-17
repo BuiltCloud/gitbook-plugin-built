@@ -1,5 +1,11 @@
-var fs = require('fs');
-var path = require('path');
+const childProcess = require('child_process');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const url = require('url');
+const os = require('os');
+
+const books = require("books-cli");
 
 const syncReq = require('sync-request');
 const nodeCache = require('node-cache');
@@ -27,28 +33,12 @@ Date.prototype.format = function(format) {
 	return format;
 };
 
-var mermaidRegex = /^```mermaid((.*[\r\n]+)+?)?```$/im;
-
-function processMermaidBlockList(page) {
-
-  var match;
-
-  while ((match = mermaidRegex.exec(page.content))) {
-    var rawBlock = match[0];
-    var mermaidContent = match[1];
-    page.content = page.content.replace(rawBlock, '<div class="mermaid">' +
-      mermaidContent + '</div>');
-  }
-
-  return page;
-}
-
-
 module.exports = {
     book: {
         assets: './lib',
         js: [
-            'plugin.js'
+			'plugin.js',
+			'mermaid/mermaidAPI.js'
         ],
         css: [
             'plugin.css',
@@ -86,6 +76,10 @@ module.exports = {
 			if (this.output.name != 'website') {
 				return page;
 			}
+			// mermaid
+			page = books.Mermaid.processMermaidBlockList(page);
+			// end mermaid
+
 			const defaultOption = {
 				'description': 'modified at',
 				'signature': 'Enter',
@@ -144,10 +138,21 @@ module.exports = {
 			/** add contents to the original content */
 			page.content = page.content + htmlContents;
 
-			return processMermaidBlockList(page);
+			return page;
 		}
-    },
-    blocks: {},
+	},
+    blocks: {
+		mermaid: {
+            process: function (block) {
+                try {
+                    var body = block.body;
+                    return books.Mermaid.string2svgAsync(body);
+                } catch (error) {
+                    throw error;
+                }
+            }
+        }
+	},
     /** Map of new filters */
 	filters: {
 		dateFormat: function(d, format, utc) {

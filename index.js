@@ -5,8 +5,6 @@ const crypto = require('crypto');
 const url = require('url');
 const os = require('os');
 
-const books = require("books-cli");
-
 const syncReq = require('sync-request');
 const nodeCache = require('node-cache');
 const localCache = new nodeCache({});
@@ -38,7 +36,8 @@ module.exports = {
         assets: './lib',
         js: [
 			'plugin.js',
-			'mermaid/mermaidAPI.js'
+			'mermaid/mermaid.min.js',
+			'mermaid/mermaid.index.js'
         ],
         css: [
             'plugin.css',
@@ -76,9 +75,6 @@ module.exports = {
 			if (this.output.name != 'website') {
 				return page;
 			}
-			// mermaid
-			page = books.Mermaid.processMermaidBlockList(page);
-			// end mermaid
 
 			const defaultOption = {
 				'description': 'modified at',
@@ -142,16 +138,7 @@ module.exports = {
 		}
 	},
     blocks: {
-		mermaid: {
-            process: function (block) {
-                try {
-                    var body = block.body;
-                    return books.Mermaid.string2svgAsync(body);
-                } catch (error) {
-                    throw error;
-                }
-            }
-        }
+		
 	},
     /** Map of new filters */
 	filters: {
